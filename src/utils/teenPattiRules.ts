@@ -6,7 +6,7 @@ export const TEEN_PATTI_RULES: TeenPattiRules = {
   bootAmount: 10, // Default boot/ante amount
   blindBetMultiplier: 1, // Blind players bet 1x
   seenBetMultiplier: 2,  // Seen players bet 2x
-  maxBetLimit: 4, // Maximum bet is 4x current stake
+  maxBetLimit: 2, // Maximum bet is 4x current stake
   showCost: 2 // Cost multiplier for show
 };
 

@@ -47,7 +47,7 @@ const PlayerTurnSequence: React.FC<PlayerTurnSequenceProps> = ({
     return 'waiting';
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): 'primary' | 'success' | 'error' | 'default' => {
     switch (status) {
       case 'current': return 'primary';
       case 'completed': return 'success';
@@ -72,16 +72,30 @@ const PlayerTurnSequence: React.FC<PlayerTurnSequenceProps> = ({
   };
 
   return (
-    <Card sx={{ mb: 2 }}>
-      <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6" fontWeight="bold">
+    <Card sx={{ mb: { xs: 1.5, sm: 2 } }}>
+      <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3 } }}>
+        <Box 
+          sx={{
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: { xs: 1.5, sm: 2 },
+            flexWrap: { xs: 'wrap', sm: 'nowrap' },
+            gap: { xs: 1, sm: 0 }
+          }}
+        >
+          <Typography 
+            variant="h6" 
+            fontWeight="bold"
+            sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
+          >
             Player Turn Sequence
           </Typography>
           <Chip 
             label={`Round ${currentRound}`} 
             color="primary" 
-            size="small" 
+            size="small"
+            sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
           />
         </Box>
 
@@ -90,7 +104,7 @@ const PlayerTurnSequence: React.FC<PlayerTurnSequenceProps> = ({
           <Card 
             variant="outlined" 
             sx={{ 
-              mb: 2, 
+              mb: { xs: 1.5, sm: 2 },
               bgcolor: 'primary.light', 
               border: '2px solid',
               borderColor: 'primary.main',
@@ -101,10 +115,18 @@ const PlayerTurnSequence: React.FC<PlayerTurnSequenceProps> = ({
               animation: 'pulse 2s infinite'
             }}
           >
-            <CardContent sx={{ py: 2 }}>
-              <Box display="flex" alignItems="center" gap={2}>
+            <CardContent sx={{ py: { xs: 1.5, sm: 2 }, px: { xs: 1.5, sm: 2 } }}>
+              <Box 
+                sx={{
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: { xs: 1.5, sm: 2 }
+                }}
+              >
                 <Avatar sx={{ 
-                  bgcolor: 'primary.main', 
+                  bgcolor: 'primary.main',
+                  width: { xs: 36, sm: 40 },
+                  height: { xs: 36, sm: 40 },
                   '@keyframes bounce': {
                     '0%, 20%, 50%, 80%, 100%': { transform: 'translateY(0)' },
                     '40%': { transform: 'translateY(-4px)' },
@@ -115,7 +137,12 @@ const PlayerTurnSequence: React.FC<PlayerTurnSequenceProps> = ({
                   <CurrentTurnIcon />
                 </Avatar>
                 <Box flex={1}>
-                  <Typography variant="h6" color="primary.main" fontWeight="bold">
+                  <Typography 
+                    variant="h6" 
+                    color="primary.main" 
+                    fontWeight="bold"
+                    sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
+                  >
                     🎯 {currentPlayer.name}'s Turn
                   </Typography>
                   <Typography variant="body2" color="text.secondary">

@@ -12,7 +12,8 @@ import {
   Tab,
   Paper,
   Card,
-  CardContent
+  CardContent,
+  Chip
 } from '@mui/material';
 import {
   Casino as CasinoIcon,
@@ -32,7 +33,7 @@ import type { GameState, Player, GameResult, GameStats, BetAction } from './type
 import { HandRank } from './types/game';
 import { getNextPlayerIndex } from './utils/teenPattiRules';
 
-// Create Material-UI theme
+// Create Material-UI theme with responsive breakpoints
 const theme = createTheme({
   palette: {
     primary: {
@@ -41,13 +42,68 @@ const theme = createTheme({
     secondary: {
       main: '#dc004e',
     },
+    background: {
+      default: '#f5f5f5',
+      paper: '#ffffff',
+    },
   },
   typography: {
     h4: {
       fontWeight: 600,
+      fontSize: 'clamp(1.5rem, 4vw, 2.125rem)',
+    },
+    h5: {
+      fontWeight: 600,
+      fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
     },
     h6: {
       fontWeight: 600,
+      fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+    },
+    body1: {
+      fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+    },
+    body2: {
+      fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+  spacing: 8,
+  components: {
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          '@media (min-width: 600px)': {
+            paddingLeft: '24px',
+            paddingRight: '24px',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        },
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          minHeight: '56px',
+        },
+      },
     },
   },
 });
@@ -67,9 +123,20 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{ height: '100%', overflow: 'auto' }}
       {...other}
     >
-      {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
+      {value === index && (
+        <Box 
+          sx={{ 
+            p: { xs: 2, sm: 3 },
+            height: '100%',
+            overflow: 'auto'
+          }}
+        >
+          {children}
+        </Box>
+      )}
     </div>
   );
 }
@@ -368,130 +435,251 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="static">
-        <Toolbar>
-          <CasinoIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Teen Patti Calculator
-          </Typography>
-          <Typography variant="body2">
-            Pot: ₹{gameState.pot} | Round: {gameState.currentRound}
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          height: '100vh',
+          width: '100vw',
+          overflow: 'hidden'
+        }}
+      >
+        <AppBar position="static" elevation={0}>
+          <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
+            <CasinoIcon sx={{ mr: 2 }} />
+            <Typography 
+              variant="h6" 
+              component="div" 
+              sx={{ 
+                flexGrow: 1,
+                fontSize: { xs: '1rem', sm: '1.25rem' }
+              }}
+            >
+              Teen Patti Calculator
+            </Typography>
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'flex-end', sm: 'center' },
+                gap: { xs: 0.5, sm: 2 }
+              }}
+            >
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  textAlign: 'right'
+                }}
+              >
+                Pot: ₹{gameState.pot}
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  textAlign: 'right'
+                }}
+              >
+                Round: {gameState.currentRound}
+              </Typography>
+            </Box>
+          </Toolbar>
+        </AppBar>
 
-      <Container maxWidth="lg" sx={{ py: 3 }}>
-        <Paper sx={{ width: '100%' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={handleTabChange} aria-label="game tabs">
-              <Tab 
-                icon={<PlayersIcon />} 
-                label="Players & Game" 
-                iconPosition="start"
-              />
-              <Tab 
-                icon={<StatsIcon />} 
-                label="Statistics" 
-                iconPosition="start"
-              />
-            </Tabs>
-          </Box>
-
-          <TabPanel value={tabValue} index={0}>
-            <Box display="flex" flexDirection="column" gap={3}>
-              {/* Player Turn Sequence */}
-              <PlayerTurnSequence
-                players={gameState.players}
-                currentPlayerIndex={gameState.currentPlayerIndex}
-                currentRound={gameState.currentRound}
-                isGameActive={gameState.isGameActive}
-                onNextPlayer={nextPlayerTurn}
-              />
-
-              {/* Player Management */}
-              <PlayerManagement
-                players={gameState.players}
-                onPlayersChange={handlePlayersChange}
-                gameActive={gameState.isGameActive}
-              />
-
-              {/* Game Controls */}
-              <GameControls
-                gameState={gameState}
-                onGameStateChange={handleGameStateChange}
-                onStartGame={handleStartGame}
-                onEndGame={handleEndGame}
-                onNewRound={handleNewRound}
-                onPlayerAction={handlePlayerAction}
-              />
-
-              {/* Teen Patti Game Sequence */}
-              {gameState.isGameActive && (
-                <TeenPattiGameSequence
-                  players={gameState.players}
-                  currentPlayerIndex={gameState.currentPlayerIndex}
-                  currentStake={gameState.currentBet}
-                  pot={gameState.pot}
-                  isGameActive={gameState.isGameActive}
-                  bettingPhase={gameState.bettingPhase}
-                  onPlayerAction={handleTeenPattiPlayerAction}
-                  onNextPlayer={nextPlayerTurn}
-                  onEndGame={handleEndGame}
+        <Container 
+          maxWidth={false}
+          disableGutters
+          sx={{ 
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            px: { xs: 1, sm: 2, md: 3 },
+            py: { xs: 1, sm: 2 }
+          }}
+        >
+          <Paper 
+            sx={{ 
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              borderRadius: { xs: 2, sm: 3 }
+            }}
+          >
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs 
+                value={tabValue} 
+                onChange={handleTabChange} 
+                aria-label="game tabs"
+                variant="fullWidth"
+                sx={{
+                  '& .MuiTab-root': {
+                    minHeight: { xs: 48, sm: 56 },
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  }
+                }}
+              >
+                <Tab 
+                  icon={<PlayersIcon />} 
+                  label="Game" 
+                  iconPosition="start"
+                  sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
                 />
-              )}
+                <Tab 
+                  icon={<StatsIcon />} 
+                  label="Statistics" 
+                  iconPosition="start"
+                  sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
+                />
+              </Tabs>
+            </Box>
 
-              {/* Winner Selection */}
-              <WinnerSelection
-                players={gameState.players}
-                pot={gameState.pot}
-                onSelectWinner={handleSelectWinner}
-                isGameActive={gameState.isGameActive}
-                currentRound={gameState.currentRound}
-              />
+            <Box sx={{ flex: 1, overflow: 'hidden' }}>
+              <TabPanel value={tabValue} index={0}>
+                <Box 
+                  sx={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: { xs: 2, sm: 3 },
+                    height: '100%',
+                    overflow: 'auto'
+                  }}
+                >
+                  {/* Player Turn Sequence */}
+                  <PlayerTurnSequence
+                    players={gameState.players}
+                    currentPlayerIndex={gameState.currentPlayerIndex}
+                    currentRound={gameState.currentRound}
+                    isGameActive={gameState.isGameActive}
+                    onNextPlayer={nextPlayerTurn}
+                  />
 
-              {/* Current Game Status */}
-              {gameState.isGameActive && (
-                <Box>
-                  <Typography variant="h6" gutterBottom>
-                    Current Game Status
-                  </Typography>
+                  {/* Main Game Layout - Responsive Grid */}
                   <Box 
-                    display="grid" 
-                    gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" 
-                    gap={2}
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: {
+                        xs: '1fr',
+                        md: 'minmax(300px, 1fr) minmax(400px, 2fr)'
+                      },
+                      gap: { xs: 2, sm: 3 },
+                      flex: 1
+                    }}
                   >
-                    {gameState.players.map((player) => (
-                      <Card key={player.id} variant="outlined">
-                        <CardContent>
-                          <Typography variant="h6" color={player.isFolded ? 'text.disabled' : 'text.primary'}>
-                            {player.name} {player.isFolded && '(Folded)'}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Current Bet: ₹{player.totalBet}
-                          </Typography>
-                          <Typography variant="body2" color="success.main">
-                            Total Points: {player.totalPoints}
-                          </Typography>
-                          <Typography variant="body2" color="primary.main">
-                            Wins: {player.totalWins}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    ))}
+                    {/* Left Column - Player Management & Controls */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
+                      <PlayerManagement
+                        players={gameState.players}
+                        onPlayersChange={handlePlayersChange}
+                        gameActive={gameState.isGameActive}
+                      />
+
+                      <GameControls
+                        gameState={gameState}
+                        onGameStateChange={handleGameStateChange}
+                        onStartGame={handleStartGame}
+                        onEndGame={handleEndGame}
+                        onNewRound={handleNewRound}
+                        onPlayerAction={handlePlayerAction}
+                      />
+
+                      <WinnerSelection
+                        players={gameState.players}
+                        pot={gameState.pot}
+                        onSelectWinner={handleSelectWinner}
+                        isGameActive={gameState.isGameActive}
+                        currentRound={gameState.currentRound}
+                      />
+                    </Box>
+
+                    {/* Right Column - Game Sequence & Status */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
+                      {/* Teen Patti Game Sequence */}
+                      {gameState.isGameActive && (
+                        <TeenPattiGameSequence
+                          players={gameState.players}
+                          currentPlayerIndex={gameState.currentPlayerIndex}
+                          currentStake={gameState.currentBet}
+                          pot={gameState.pot}
+                          isGameActive={gameState.isGameActive}
+                          bettingPhase={gameState.bettingPhase}
+                          onPlayerAction={handleTeenPattiPlayerAction}
+                          onNextPlayer={nextPlayerTurn}
+                          onEndGame={handleEndGame}
+                        />
+                      )}
+
+                      {/* Current Game Status */}
+                      {gameState.isGameActive && (
+                        <Card>
+                          <CardContent>
+                            <Typography variant="h6" gutterBottom>
+                              Game Status
+                            </Typography>
+                            <Box 
+                              sx={{
+                                display: 'grid',
+                                gridTemplateColumns: {
+                                  xs: '1fr',
+                                  sm: 'repeat(auto-fit, minmax(200px, 1fr))'
+                                },
+                                gap: { xs: 1.5, sm: 2 }
+                              }}
+                            >
+                              {gameState.players.map((player) => (
+                                <Card key={player.id} variant="outlined" sx={{ minHeight: 120 }}>
+                                  <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+                                    <Typography 
+                                      variant="subtitle1" 
+                                      color={player.isFolded ? 'text.disabled' : 'text.primary'}
+                                      sx={{ 
+                                        fontWeight: 600,
+                                        fontSize: { xs: '0.875rem', sm: '1rem' }
+                                      }}
+                                    >
+                                      {player.name}
+                                      {player.isFolded && (
+                                        <Chip 
+                                          label="Folded" 
+                                          size="small" 
+                                          color="error" 
+                                          sx={{ ml: 1, fontSize: '0.7rem' }}
+                                        />
+                                      )}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                                      Bet: ₹{player.totalBet}
+                                    </Typography>
+                                    <Typography variant="body2" color="success.main">
+                                      Points: {player.totalPoints}
+                                    </Typography>
+                                    <Typography variant="body2" color="primary.main">
+                                      Wins: {player.totalWins}
+                                    </Typography>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
-              )}
-            </Box>
-          </TabPanel>
+              </TabPanel>
 
-          <TabPanel value={tabValue} index={1}>
-            <Statistics 
-              gameHistory={gameState.gameHistory} 
-              gameStats={gameStats} 
-            />
-          </TabPanel>
-        </Paper>
-      </Container>
+              <TabPanel value={tabValue} index={1}>
+                <Statistics 
+                  gameHistory={gameState.gameHistory} 
+                  gameStats={gameStats} 
+                />
+              </TabPanel>
+            </Box>
+          </Paper>
+        </Container>
+      </Box>
       
       <FinalWinningsDisplay 
         isOpen={showFinalWinnings}

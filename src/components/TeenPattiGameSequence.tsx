@@ -166,34 +166,76 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
 
   return (
     <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
+      <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3 } }}>
+        <Typography 
+          variant="h6" 
+          gutterBottom
+          sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
+        >
           Teen Patti Game Sequence
         </Typography>
         
         {/* Game Status */}
-        <Box mb={2}>
-          <Box display="flex" justifyContent="space-between" mb={1}>
-            <Typography variant="body2">
+        <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
+          <Box 
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+              gap: { xs: 0.5, sm: 1 },
+              mb: 1
+            }}
+          >
+            <Typography 
+              variant="body2"
+              sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+            >
               Current Pot: <strong>₹{pot}</strong>
             </Typography>
-            <Typography variant="body2">
+            <Typography 
+              variant="body2"
+              sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+            >
               Current Stake: <strong>₹{currentStake}</strong>
             </Typography>
           </Box>
           
-          <Box display="flex" justifyContent="space-between" mb={2}>
-            <Typography variant="body2">
+          <Box 
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+              gap: { xs: 0.5, sm: 1 },
+              mb: { xs: 1.5, sm: 2 }
+            }}
+          >
+            <Typography 
+              variant="body2"
+              sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+            >
               Active Players: <strong>{activePlayers.length}</strong>
             </Typography>
-            <Typography variant="body2">
-              Phase: <Chip label={bettingPhase} size="small" color="primary" />
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography 
+                variant="body2"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
+                Phase:
+              </Typography>
+              <Chip 
+                label={bettingPhase} 
+                size="small" 
+                color="primary"
+                sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+              />
+            </Box>
           </Box>
           
           {/* Progress indicator */}
-          <Box mb={2}>
-            <Typography variant="caption" color="text.secondary">
+          <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
+            <Typography 
+              variant="caption" 
+              color="text.secondary"
+              sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+            >
               Turn Progress
             </Typography>
             <LinearProgress 
@@ -206,33 +248,69 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
 
         {/* Current Player Turn */}
         {currentPlayer && (
-          <Card variant="outlined" sx={{ mb: 2, bgcolor: 'action.hover' }}>
-            <CardContent>
-              <Typography variant="h6" color="primary">
+          <Card 
+            variant="outlined" 
+            sx={{ 
+              mb: { xs: 1.5, sm: 2 }, 
+              bgcolor: 'action.hover',
+              border: '2px solid',
+              borderColor: 'primary.main'
+            }}
+          >
+            <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+              <Typography 
+                variant="h6" 
+                color="primary"
+                sx={{ 
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  mb: { xs: 1, sm: 1.5 }
+                }}
+              >
                 {currentPlayer.name}'s Turn
               </Typography>
               
-              <Box display="flex" gap={1} my={1}>
+              <Box 
+                sx={{
+                  display: 'flex', 
+                  gap: 1, 
+                  my: 1,
+                  flexWrap: 'wrap'
+                }}
+              >
                 <Chip 
                   icon={isBlindPlayer ? <BlindIcon /> : <SeeIcon />}
                   label={isBlindPlayer ? 'Playing Blind' : 'Seen Cards'}
                   color={isBlindPlayer ? 'warning' : 'success'}
                   size="small"
+                  sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
                 />
                 <Chip 
                   label={`Bet Range: ₹${minBet} - ₹${maxBet}`}
                   size="small"
                   variant="outlined"
+                  sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
                 />
               </Box>
 
               {/* Action Buttons */}
-              <Box display="flex" gap={1} flexWrap="wrap" mt={2}>
+              <Box 
+                sx={{
+                  display: 'flex', 
+                  gap: { xs: 1, sm: 1.5 }, 
+                  flexWrap: 'wrap', 
+                  mt: { xs: 1.5, sm: 2 }
+                }}
+              >
                 <Button
                   variant="contained"
                   color="primary"
                   startIcon={<BetIcon />}
                   onClick={() => handleBetAction(isBlindPlayer ? 'blind' : 'chaal')}
+                  sx={{ 
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    minHeight: { xs: 36, sm: 40 },
+                    flex: { xs: '1 1 calc(50% - 4px)', sm: 'none' }
+                  }}
                 >
                   {isBlindPlayer ? 'Blind Bet' : 'Chaal'}
                 </Button>
@@ -243,6 +321,11 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
                     color="info"
                     startIcon={<SeeIcon />}
                     onClick={handleSeeCards}
+                    sx={{ 
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      minHeight: { xs: 36, sm: 40 },
+                      flex: { xs: '1 1 calc(50% - 4px)', sm: 'none' }
+                    }}
                   >
                     See Cards
                   </Button>
@@ -253,6 +336,11 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
                     variant="outlined"
                     color="secondary"
                     onClick={() => handleBetAction('show')}
+                    sx={{ 
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      minHeight: { xs: 36, sm: 40 },
+                      flex: { xs: '1 1 calc(50% - 4px)', sm: 'none' }
+                    }}
                   >
                     Show (₹{currentStake * TEEN_PATTI_RULES.showCost})
                   </Button>
@@ -262,6 +350,11 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
                   variant="outlined"
                   color="error"
                   onClick={handleFold}
+                  sx={{ 
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    minHeight: { xs: 36, sm: 40 },
+                    flex: { xs: '1 1 calc(50% - 4px)', sm: 'none' }
+                  }}
                 >
                   Pack/Fold
                 </Button>
@@ -271,14 +364,24 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
         )}
 
         {/* Players Status */}
-        <Typography variant="subtitle2" gutterBottom>
+        <Typography 
+          variant="subtitle2" 
+          gutterBottom
+          sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+        >
           Players Status
         </Typography>
         <Box 
-          display="grid" 
-          gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" 
-          gap={1}
-          mb={2}
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(auto-fit, minmax(180px, 1fr))',
+              md: 'repeat(auto-fit, minmax(200px, 1fr))'
+            },
+            gap: { xs: 1, sm: 1.5 },
+            mb: { xs: 1.5, sm: 2 }
+          }}
         >
           {players.map((player, index) => (
             <Card 
@@ -287,14 +390,27 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
               sx={{ 
                 bgcolor: index === currentPlayerIndex ? 'primary.light' : 
                         player.isFolded ? 'action.disabledBackground' : 'background.paper',
-                opacity: player.isFolded ? 0.6 : 1
+                opacity: player.isFolded ? 0.6 : 1,
+                border: index === currentPlayerIndex ? '2px solid' : '1px solid',
+                borderColor: index === currentPlayerIndex ? 'primary.main' : 'divider'
               }}
             >
-              <CardContent sx={{ py: 1 }}>
-                <Typography variant="body2" fontWeight="bold">
+              <CardContent sx={{ py: { xs: 1, sm: 1.5 }, px: { xs: 1.5, sm: 2 } }}>
+                <Typography 
+                  variant="body2" 
+                  fontWeight="bold"
+                  sx={{ 
+                    fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    mb: 0.5
+                  }}
+                >
                   {player.name} {index === currentPlayerIndex && '(Current)'}
                 </Typography>
-                <Typography variant="caption" display="block">
+                <Typography 
+                  variant="caption" 
+                  display="block"
+                  sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                >
                   Bet: ₹{player.totalBet} | Status: {
                     player.isFolded ? 'Folded' :
                     player.isBlind && !player.hasSeen ? 'Blind' :
@@ -314,6 +430,10 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
             startIcon={<StopIcon />}
             onClick={onEndGame}
             fullWidth
+            sx={{ 
+              fontSize: { xs: '0.875rem', sm: '1rem' },
+              minHeight: { xs: 44, sm: 48 }
+            }}
           >
             End Game
           </Button>
@@ -321,13 +441,29 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
       </CardContent>
 
       {/* Bet Dialog */}
-      <Dialog open={showBetDialog} onClose={() => setShowBetDialog(false)}>
-        <DialogTitle>
+      <Dialog 
+        open={showBetDialog} 
+        onClose={() => setShowBetDialog(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            m: { xs: 2, sm: 3 },
+            maxWidth: { xs: 'calc(100vw - 32px)', sm: 'sm' }
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
           {actionType === 'show' ? 'Show Cards' : 
            actionType === 'blind' ? 'Blind Bet' : 'Chaal Bet'}
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="text.secondary" mb={2}>
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            mb={2}
+            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+          >
             {actionType === 'show' 
               ? `Cost to show: ₹${currentStake * TEEN_PATTI_RULES.showCost}`
               : `Bet amount (₹${minBet} - ₹${maxBet})`
@@ -343,20 +479,36 @@ const TeenPattiGameSequence: React.FC<TeenPattiGameSequenceProps> = ({
               inputProps={{ min: minBet, max: maxBet }}
               fullWidth
               margin="normal"
+              size="small"
+              sx={{
+                '& .MuiInputBase-input': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }
+              }}
             />
           )}
           
-          <Typography variant="caption" color="text.secondary">
+          <Typography 
+            variant="caption" 
+            color="text.secondary"
+            sx={{ fontSize: { xs: '0.75rem', sm: '0.8rem' } }}
+          >
             Current player: {currentPlayer?.name} 
             ({isBlindPlayer ? 'Blind' : 'Seen'} player)
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowBetDialog(false)}>Cancel</Button>
+        <DialogActions sx={{ p: { xs: 1.5, sm: 2 } }}>
+          <Button 
+            onClick={() => setShowBetDialog(false)}
+            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+          >
+            Cancel
+          </Button>
           <Button 
             onClick={confirmBetAction}
             variant="contained"
             disabled={betAmount < minBet || betAmount > maxBet}
+            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
           >
             Confirm {actionType === 'show' ? 'Show' : 'Bet'}
           </Button>
